@@ -1,20 +1,29 @@
-import express from 'express'
+import express from 'express';
+import { PrismaClient } from '../generated/prisma/index.js';
 
-const app = express()
-app.use(express.json())
+const app = express();
+const prisma = new PrismaClient();
 
-const users = []
+app.use(express.json()); 
 
-app.post('/user',(req, res) => {
+app.post('/users', async (req, res) => {
+  try {
+    console.log('Body recebido:', req.body); 
+    const { name, email, age } = req.body;
 
-    users.push(req.body)
+    const user = await prisma.user.create({
+      data: { name, email, age }
+    });
 
-    res.send('Ok,post')
+    res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao criar usuário' });
+  }
+});
 
-})
+app.get('/users', (req, res) => {
+  res.send('Lista de usuários');
+});
 
-app.get('/user', (req, res) => {
-    res.json(users)
-})
-
-app.listen(2501)
+app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
