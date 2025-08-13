@@ -1,5 +1,5 @@
 import express, { json } from 'express';
-import { PrismaClient } from '../generated/prisma/index.js';
+import { Prisma, PrismaClient } from '../generated/prisma/index.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -31,5 +31,22 @@ app.get('/users', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+app.put('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  const { email, name, age } = req.body;
+
+  try {
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser && existingUser.id !== id)
+      return res.status(400).json({ error: 'Email already in use.' });
+
+    const user = await prisma.user.update({ where: { id }, data: { email, name, age } });
+    res.json(user);
+  } catch {
+    res.status(500).json({ error: 'Error updating user' });
+  }
+});
+
 
 app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
