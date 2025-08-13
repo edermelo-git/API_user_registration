@@ -1,6 +1,5 @@
 import express, { json } from 'express';
 import { PrismaClient } from '../generated/prisma/index.js';
-import { join } from '@prisma/client/runtime/library';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -19,7 +18,7 @@ app.post('/users', async (req, res) => {
         res.status(201).json(user);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Erro ao criar usuário' });
+        res.status(500).json({ error: 'Error creating user' });
     }
 });
 
@@ -28,8 +27,8 @@ app.get('/users', async (req, res) => {
         const users = await prisma.user.findMany();
         res.status(200).json(users);
     } catch (error) {
-        console.error('Erro ao buscar usuários:', error);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        console.error('Error when searching for users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
