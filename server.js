@@ -35,7 +35,7 @@ app.get('/users', async (req, res) => {
 app.put('/users/:id', async (req, res) => {
   const { id } = req.params;
   const { email, name, age } = req.body;
-  
+
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser && existingUser.id !== id)
@@ -62,4 +62,4 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Servidor rodando na porta 3000'));
+app.listen(3000, () => console.log('Server running on port 3000'));
